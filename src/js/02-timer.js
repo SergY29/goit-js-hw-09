@@ -14,6 +14,8 @@ const options = {
     defaultDate: Date.now(),
     minuteIncrement: 1,
     onClose(selectedDates) {
+        console.log(selectedDates[0]);
+        const secondTime = selectedDates[0];
         if ((defaultDate - selectedDates[0]) < 86400000) {
             enableButton();
         };
@@ -22,15 +24,18 @@ const options = {
         if ((defaultDate - selectedDates[0]) > 86400000) {
             window.alert("Please choose a date in the future");
             disabledButton();
+            console.log(options.onClose.secondTime);
         }
     },
 };
 
+
+
+
 flatpickr(refs.inputTime, options);
+
 disabledButton();
 
-const value = instance.onClose.value;
-console.log(value);
 
 
 refs.start.addEventListener('click', start);
