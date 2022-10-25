@@ -4,6 +4,10 @@ import "flatpickr/dist/flatpickr.min.css";
 const refs = {
     start: document.querySelector('[data-start]'),
     inputTime: document.querySelector('#datetime-picker'),
+    days: document.querySelector('#data-days'),
+    hours: document.querySelector('#data-hours'),
+    minutes: document.querySelector('#data-minutes'),
+    seconds: document.querySelector('#data-seconds'),
 };
 
 const defaultDate = Date.now();
@@ -41,9 +45,13 @@ function start() {
         const currentTime = Date.now();
         const delta = referenceTime - currentTime;
 
-        const timer = convertMs(delta);
-        console.log(timer);
+        const { days, hours, minutes, seconds } = convertMs(delta);
+        console.log(`${days}: ${hours}: ${minutes}: ${seconds}`);
     }, 1000);
+};
+
+function updateClock({ days, hours, minutes, seconds }) {
+
 };
 
 function disabledButton() {
@@ -62,6 +70,10 @@ function setTimeLocalStorage(title, value) {
     localStorage.setItem(title, value);
 };
 
+function addLeadingZero(value) {
+    return String(value).padStart(2, '0');
+};
+
 function convertMs(ms) {
     // Number of milliseconds per unit of time
     const second = 1000;
@@ -70,13 +82,13 @@ function convertMs(ms) {
     const day = hour * 24;
 
     // Remaining days
-    const days = Math.floor(ms / day);
+    const days = addLeadingZero(Math.floor(ms / day));
     // Remaining hours
-    const hours = Math.floor((ms % day) / hour);
+    const hours = addLeadingZero(Math.floor((ms % day) / hour));
     // Remaining minutes
-    const minutes = Math.floor(((ms % day) % hour) / minute);
+    const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
     // Remaining seconds
-    const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+    const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
 
     return { days, hours, minutes, seconds };
 };
