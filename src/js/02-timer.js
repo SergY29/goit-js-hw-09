@@ -6,6 +6,7 @@ const refs = {
 };
 
 const defaultDate = new Date();
+disabledButton()
 
 // console.log(refs.start);
 
@@ -17,16 +18,15 @@ const options = {
     minuteIncrement: 1,
     onClose(selectedDates) {
         console.log(selectedDates[0]);
-
-
-
+        if ((defaultDate - selectedDates[0]) < 86400000) {
+            enableButton();
+        };
     },
     onChange(selectedDates) {
         if ((defaultDate - selectedDates[0]) > 86400000) {
             window.alert("Please choose a date in the future");
-
+            disabledButton();
         }
-
     }
 };
 console.log(defaultDate);
