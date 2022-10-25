@@ -29,7 +29,7 @@ const options = {
         }
     }
 };
-console.log(defaultDate);
+// console.log(defaultDate);
 
 flatpickr("#datetime-picker", options);
 
