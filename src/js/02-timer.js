@@ -15,16 +15,15 @@ const options = {
     defaultDate: Date.now(),
     minuteIncrement: 1,
     onClose(selectedDates) {
-        // console.log(selectedDates[0]);
-        const value = (selectedDates[0] - defaultDate);
         if ((defaultDate - selectedDates[0]) < 86400000) {
+            const data = ((selectedDates[0] - defaultDate) + defaultDate);
+            setTimeLocalStorage(TIME, data);
             enableButton();
-            localStorage.setItem(TIME, value);
         };
     },
     onChange(selectedDates) {
         if ((defaultDate - selectedDates[0]) > 86400000) {
-            window.alert("Please choose a date in the future");
+            windowAlert();
             disabledButton();
         }
     },
@@ -36,20 +35,32 @@ disabledButton();
 refs.start.addEventListener('click', start);
 
 function start() {
+    let referenceTime = localStorage.getItem(TIME);
+
     setInterval(() => {
-        const referenceTime = localStorage.getItem(TIME);
-        // convertMs(ms);
-        console.log(referenceTime);
+        const currentTime = Date.now();
+        const delta = referenceTime - currentTime;
+
+        const timer = convertMs(delta);
+        console.log(timer);
     }, 1000);
-}
+};
 
 function disabledButton() {
     refs.start.disabled = true;
-}
+};
 
 function enableButton() {
     refs.start.disabled = false;
-}
+};
+
+function windowAlert() {
+    window.alert("Please choose a date in the future");
+};
+
+function setTimeLocalStorage(title, value) {
+    localStorage.setItem(title, value);
+};
 
 function convertMs(ms) {
     // Number of milliseconds per unit of time
@@ -68,8 +79,4 @@ function convertMs(ms) {
     const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
     return { days, hours, minutes, seconds };
-}
-
-console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
-console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
+};
