@@ -15,14 +15,14 @@ const options = {
     defaultDate: Date.now(),
     minuteIncrement: 1,
     onClose(selectedDates) {
-        if ((defaultDate - selectedDates[0]) < 86400000) {
+        if ((defaultDate - selectedDates[0]) < 0) {
             const data = ((selectedDates[0] - defaultDate) + defaultDate);
             setTimeLocalStorage(TIME, data);
             enableButton();
         };
     },
     onChange(selectedDates) {
-        if ((defaultDate - selectedDates[0]) > 86400000) {
+        if ((defaultDate - selectedDates[0]) > 0) {
             windowAlert();
             disabledButton();
         }
