@@ -1,14 +1,18 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import Notiflix from 'notiflix';
 
 const refs = {
     start: document.querySelector('[data-start]'),
-    stop: document.querySelector('[data-stop]'),
     inputTime: document.querySelector('#datetime-picker'),
     days: document.querySelector('[data-days]'),
     hours: document.querySelector('[data-hours]'),
     minutes: document.querySelector('[data-minutes]'),
     seconds: document.querySelector('[data-seconds]'),
+    timer: document.querySelector('.timer'),
+    label: document.querySelectorAll('.label'),
+    field: document.querySelectorAll('.field'),
+    valueTimer: document.querySelectorAll('.value'),
 };
 
 
@@ -34,18 +38,20 @@ const options = {
         }
     },
 };
-const reverceTimer = {
+const timer = {
     isActive: false,
 
     start() {
+
         if (this.isActive) {
             return;
-        }
+        };
+
         disabledButton();
         let referenceTime = localStorage.getItem(TIME);
         this.isActive = true;
 
-        this.intervalFn = setInterval(() => {
+        setInterval(() => {
             const currentTime = Date.now();
             const delta = referenceTime - currentTime;
             const time = convertMs(delta);
@@ -53,27 +59,20 @@ const reverceTimer = {
                 updateClock(time);
             } else {
                 this.isActive = false;
+                enableButton();
                 return;
             }
-            // console.log(`${days}: ${hours}: ${minutes}: ${seconds}`);
         }, 1000);
-    },
-
-    stop() {
-        clearInterval(this.intervalFn);
-
-        // this.isActive = false;
-        // enableButton();
     },
 };
 
 
+
 flatpickr(refs.inputTime, options);
 disabledButton();
+style();
 
-refs.start.addEventListener('click', reverceTimer.start);
-refs.stop.addEventListener('click', reverceTimer.stop);
-
+refs.start.addEventListener('click', timer.start);
 
 function updateClock({ days, hours, minutes, seconds }) {
     refs.days.textContent = `${days}`;
@@ -91,7 +90,8 @@ function enableButton() {
 };
 
 function windowAlert() {
-    window.alert("Please choose a date in the future");
+    // window.alert("Please choose a date in the future");
+    Notiflix.Notify.warning('Please choose a date in the future');
 };
 
 function setTimeLocalStorage(title, value) {
@@ -120,3 +120,21 @@ function convertMs(ms) {
 
     return { days, hours, minutes, seconds };
 };
+
+
+function style() {
+    refs.timer.style.display = 'flex';
+
+    refs.valueTimer.forEach(valueTimer => {
+        valueTimer.style.fontSize = '50px';
+    });
+
+    refs.label.forEach(label => {
+        label.style.fontSize = '20px';
+        label.style.display = 'flex';
+    });
+
+    refs.field.forEach(field => {
+        field.style.marginLeft = '20px';
+    });
+}; 
