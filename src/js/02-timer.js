@@ -3,12 +3,14 @@ import "flatpickr/dist/flatpickr.min.css";
 
 const refs = {
     start: document.querySelector('[data-start]'),
+    stop: document.querySelector('[data-stop]'),
     inputTime: document.querySelector('#datetime-picker'),
-    days: document.querySelector('#data-days'),
-    hours: document.querySelector('#data-hours'),
-    minutes: document.querySelector('#data-minutes'),
-    seconds: document.querySelector('#data-seconds'),
+    days: document.querySelector('[data-days]'),
+    hours: document.querySelector('[data-hours]'),
+    minutes: document.querySelector('[data-minutes]'),
+    seconds: document.querySelector('[data-seconds]'),
 };
+
 
 const defaultDate = Date.now();
 const TIME = "time";
@@ -32,26 +34,46 @@ const options = {
         }
     },
 };
+const reverceTimer = {
+    isActive: false,
+
+    start() {
+        if (this.isActive) {
+            return;
+        }
+
+        let referenceTime = localStorage.getItem(TIME);
+        this.isActive = true;
+
+        const isActive = true;
+        this.setIntervalTimer = setInterval(() => {
+            const currentTime = Date.now();
+            const delta = referenceTime - currentTime;
+            const time = convertMs(delta);
+            updateClock(time);
+            // console.log(`${days}: ${hours}: ${minutes}: ${seconds}`);
+        }, 1000);
+    },
+
+    stop() {
+        clearInterval(this.setIntervalTimer);
+        this.isActive = false;
+    }
+};
+
 
 flatpickr(refs.inputTime, options);
 disabledButton();
 
-refs.start.addEventListener('click', start);
+refs.start.addEventListener('click', reverceTimer.start);
+refs.stop.addEventListener('click', reverceTimer.stop);
 
-function start() {
-    let referenceTime = localStorage.getItem(TIME);
-
-    setInterval(() => {
-        const currentTime = Date.now();
-        const delta = referenceTime - currentTime;
-
-        const { days, hours, minutes, seconds } = convertMs(delta);
-        console.log(`${days}: ${hours}: ${minutes}: ${seconds}`);
-    }, 1000);
-};
 
 function updateClock({ days, hours, minutes, seconds }) {
-
+    refs.days.textContent = `${days}`;
+    refs.hours.textContent = `${hours}`;
+    refs.minutes.textContent = `${minutes}`;
+    refs.seconds.textContent = `${seconds}`;
 };
 
 function disabledButton() {
