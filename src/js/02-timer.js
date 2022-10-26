@@ -41,24 +41,30 @@ const reverceTimer = {
         if (this.isActive) {
             return;
         }
-
+        disabledButton();
         let referenceTime = localStorage.getItem(TIME);
         this.isActive = true;
 
-        const isActive = true;
-        this.setIntervalTimer = setInterval(() => {
+        this.intervalFn = setInterval(() => {
             const currentTime = Date.now();
             const delta = referenceTime - currentTime;
             const time = convertMs(delta);
-            updateClock(time);
+            if (delta > 0) {
+                updateClock(time);
+            } else {
+                this.isActive = false;
+                return;
+            }
             // console.log(`${days}: ${hours}: ${minutes}: ${seconds}`);
         }, 1000);
     },
 
     stop() {
-        clearInterval(this.setIntervalTimer);
-        this.isActive = false;
-    }
+        clearInterval(this.intervalFn);
+
+        // this.isActive = false;
+        // enableButton();
+    },
 };
 
 
