@@ -4,14 +4,18 @@ import Notiflix from 'notiflix';
 
 const refs = {
     start: document.querySelector('[data-start]'),
+    stop: document.querySelector('[data-stop]'),
+    refresh: document.querySelector('[data-refresh]'),
     inputTime: document.querySelector('#datetime-picker'),
     days: document.querySelector('[data-days]'),
     hours: document.querySelector('[data-hours]'),
     minutes: document.querySelector('[data-minutes]'),
     seconds: document.querySelector('[data-seconds]'),
+
+
     timer: document.querySelector('.timer'),
     label: document.querySelectorAll('.label'),
-    field: document.querySelectorAll('.field'),
+    fields: document.querySelectorAll('.field'),
     valueTimer: document.querySelectorAll('.value'),
 };
 
@@ -38,8 +42,13 @@ const options = {
         }
     },
 };
+
+
+
 const timer = {
     isActive: false,
+    timerId: null,
+
 
     start() {
 
@@ -51,7 +60,7 @@ const timer = {
         let referenceTime = localStorage.getItem(TIME);
         this.isActive = true;
 
-        setInterval(() => {
+        timerId = setInterval(() => {
             const currentTime = Date.now();
             const delta = referenceTime - currentTime;
             const time = convertMs(delta);
@@ -64,6 +73,19 @@ const timer = {
             }
         }, 1000);
     },
+
+    stop() {
+        clearInterval(timerId);
+        this.isActive = false;
+
+    },
+
+    refresh() {
+        clearInterval(timerId);
+        enableButton();
+        const time = convertMs(0);
+        updateClock(time);
+    }
 };
 
 
@@ -73,6 +95,8 @@ disabledButton();
 style();
 
 refs.start.addEventListener('click', timer.start);
+refs.stop.addEventListener('click', timer.stop);
+refs.refresh.addEventListener('click', timer.refresh);
 
 function updateClock({ days, hours, minutes, seconds }) {
     refs.days.textContent = `${days}`;
@@ -131,10 +155,13 @@ function style() {
 
     refs.label.forEach(label => {
         label.style.fontSize = '20px';
-        label.style.display = 'flex';
+
     });
 
-    refs.field.forEach(field => {
+    refs.fields.forEach(field => {
         field.style.marginLeft = '20px';
+        field.style.display = 'flex';
+        field.style.flexDirection = 'column';
+        field.style.alignItems = 'center';
     });
 }; 
