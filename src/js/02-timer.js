@@ -11,8 +11,6 @@ const refs = {
     hours: document.querySelector('[data-hours]'),
     minutes: document.querySelector('[data-minutes]'),
     seconds: document.querySelector('[data-seconds]'),
-
-
     timer: document.querySelector('.timer'),
     label: document.querySelectorAll('.label'),
     fields: document.querySelectorAll('.field'),
@@ -44,10 +42,10 @@ const options = {
 };
 
 
-
 const timer = {
     isActive: false,
     timerId: null,
+
 
     start() {
         if (this.isActive) {
@@ -64,17 +62,18 @@ const timer = {
             const time = convertMs(delta);
             if (delta > 0) {
                 updateClock(time);
+                console.log(this.timerId)
             } else {
                 this.isActive = false;
                 enableButton();
-                return;
             }
         }, 1000);
     },
 
     stop() {
-        clearInterval(this.timerId);
         this.isActive = false;
+        clearInterval(this.timerId);
+        console.log(this.timerId)
 
     },
 
@@ -92,9 +91,9 @@ flatpickr(refs.inputTime, options);
 disabledButton();
 style();
 
-refs.start.addEventListener('click', timer.start);
-refs.stop.addEventListener('click', timer.stop);
-refs.refresh.addEventListener('click', timer.refresh);
+refs.start.addEventListener('click', () => { timer.start() });
+refs.stop.addEventListener('click', () => { timer.stop() });
+refs.refresh.addEventListener('click', () => { timer.refresh() });
 
 function updateClock({ days, hours, minutes, seconds }) {
     refs.days.textContent = `${days}`;
