@@ -49,9 +49,7 @@ const timer = {
     isActive: false,
     timerId: null,
 
-
     start() {
-
         if (this.isActive) {
             return;
         };
@@ -60,7 +58,7 @@ const timer = {
         let referenceTime = localStorage.getItem(TIME);
         this.isActive = true;
 
-        timerId = setInterval(() => {
+        this.timerId = setInterval(() => {
             const currentTime = Date.now();
             const delta = referenceTime - currentTime;
             const time = convertMs(delta);
@@ -75,13 +73,13 @@ const timer = {
     },
 
     stop() {
-        clearInterval(timerId);
+        clearInterval(this.timerId);
         this.isActive = false;
 
     },
 
     refresh() {
-        clearInterval(timerId);
+        clearInterval(this.timerId);
         enableButton();
         const time = convertMs(0);
         updateClock(time);
