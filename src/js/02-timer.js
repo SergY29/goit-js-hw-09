@@ -12,11 +12,9 @@ const refs = {
     minutes: document.querySelector('[data-minutes]'),
     seconds: document.querySelector('[data-seconds]'),
     timer: document.querySelector('.timer'),
-    label: document.querySelectorAll('.label'),
     fields: document.querySelectorAll('.field'),
     valueTimer: document.querySelectorAll('.value'),
 };
-
 
 const defaultDate = Date.now();
 const TIME = "time";
@@ -41,11 +39,12 @@ const options = {
     },
 };
 
-
-const timer = {
-    isActive: false,
-    timerId: null,
-
+class Timer {
+    constructor({ onUpdateClock }) {
+        this.isActive = false;
+        this.timerId = null;
+        this.onUpdateClock = onUpdateClock;
+    };
 
     start() {
         if (this.isActive) {
@@ -59,32 +58,62 @@ const timer = {
         this.timerId = setInterval(() => {
             const currentTime = Date.now();
             const delta = referenceTime - currentTime;
-            const time = convertMs(delta);
+            const time = this.convertMs(delta);
             if (delta > 0) {
-                updateClock(time);
-                // console.log(this.timerId)
+                this.onUpdateClock(time)
+
             } else {
                 this.isActive = false;
                 enableButton();
             }
         }, 1000);
-    },
+    };
+
 
     stop() {
         this.isActive = false;
         clearInterval(this.timerId);
-        // console.log(this.timerId)
 
-    },
+
+    };
 
     refresh() {
         clearInterval(this.timerId);
         enableButton();
         const time = convertMs(0);
         updateClock(time);
-    }
+    };
+
+    convertMs(ms) {
+        // Number of milliseconds per unit of time
+        const second = 1000;
+        const minute = second * 60;
+        const hour = minute * 60;
+        const day = hour * 24;
+
+        // Remaining days
+        const days = this.addLeadingZero(Math.floor(ms / day));
+        // Remaining hours
+        const hours = this.addLeadingZero(Math.floor((ms % day) / hour));
+        // Remaining minutes
+        const minutes = this.addLeadingZero(Math.floor(((ms % day) % hour) / minute));
+        // Remaining seconds
+        const seconds = this.addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
+
+        return { days, hours, minutes, seconds };
+    };
+
+    addLeadingZero(value) {
+        return String(value).padStart(2, '0');
+    };
+
+
 };
 
+
+const timer = new Timer({
+    onUpdateClock: updateClock,
+});
 
 
 flatpickr(refs.inputTime, options);
@@ -119,40 +148,11 @@ function setTimeLocalStorage(title, value) {
     localStorage.setItem(title, value);
 };
 
-function addLeadingZero(value) {
-    return String(value).padStart(2, '0');
-};
-
-function convertMs(ms) {
-    // Number of milliseconds per unit of time
-    const second = 1000;
-    const minute = second * 60;
-    const hour = minute * 60;
-    const day = hour * 24;
-
-    // Remaining days
-    const days = addLeadingZero(Math.floor(ms / day));
-    // Remaining hours
-    const hours = addLeadingZero(Math.floor((ms % day) / hour));
-    // Remaining minutes
-    const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
-    // Remaining seconds
-    const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
-
-    return { days, hours, minutes, seconds };
-};
-
-
 function style() {
     refs.timer.style.display = 'flex';
 
     refs.valueTimer.forEach(valueTimer => {
         valueTimer.style.fontSize = '50px';
-    });
-
-    refs.label.forEach(label => {
-        label.style.fontSize = '20px';
-
     });
 
     refs.fields.forEach(field => {
