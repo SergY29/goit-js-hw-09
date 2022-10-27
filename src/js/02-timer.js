@@ -62,7 +62,7 @@ const timer = {
             const time = convertMs(delta);
             if (delta > 0) {
                 updateClock(time);
-                console.log(this.timerId)
+                // console.log(this.timerId)
             } else {
                 this.isActive = false;
                 enableButton();
@@ -73,7 +73,7 @@ const timer = {
     stop() {
         this.isActive = false;
         clearInterval(this.timerId);
-        console.log(this.timerId)
+        // console.log(this.timerId)
 
     },
 
