@@ -12,12 +12,12 @@ refs.form.addEventListener('submit', onSubmit);
 
 function onSubmit() {
   event.preventDefault();
-  let startDelay = refs.delay.value;
-  const step = refs.step.value;
-  const maxCalls = refs.amount.value
+  let firstDelay = +refs.delay.value;
+  const step = +refs.step.value;
+  const amount = +refs.amount.value;
 
-  for (let i = 1; i <= maxCalls; i += 1) {
-    createPromise(i, startDelay)
+  for (let i = 1; i <= amount; i += 1) {
+    createPromise(i, firstDelay)
       .then(({ position, delay }) => {
         Notiflix.Notify.failure(
           `✅ Fulfilled promise ${position} in ${delay}ms`
@@ -28,7 +28,7 @@ function onSubmit() {
           `❌ Rejected promise ${position} in ${delay}ms`
         );
       });
-    startDelay += step;
+    firstDelay += step;
   }
 }
 
