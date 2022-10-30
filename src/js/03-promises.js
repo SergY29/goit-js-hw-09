@@ -12,9 +12,9 @@ refs.form.addEventListener('submit', onSubmit);
 
 function onSubmit() {
   event.preventDefault();
-  let firstDelay = +refs.delay.value;
-  const step = +refs.step.value;
-  const amount = +refs.amount.value;
+  let firstDelay = Number(refs.delay.value);
+  const step = Number(refs.step.value);
+  const amount = Number(refs.amount.value);
 
   for (let i = 1; i <= amount; i += 1) {
     createPromise(i, firstDelay)
